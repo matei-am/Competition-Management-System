@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CompetitionManager.Api/CompetitionManager.Api.csproj" />
+    <Project Path="src/CompetitionManager.Application/CompetitionManager.Application.csproj" />
+    <Project Path="src/CompetitionManager.Domain/CompetitionManager.Domain.csproj" />
+    <Project Path="src/CompetitionManager.Infrastructure/CompetitionManager.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CompetitionManager.Tests/CompetitionManager.Tests.csproj" />
+  </Folder>
+</Solution>

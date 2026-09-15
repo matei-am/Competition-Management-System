@@ -1,0 +1,148 @@
+{
+  "version": "1.0",
+  "name": "Competition Management System",
+  "description": "A 4-layer .NET application for managing competitive events, participants, and results.",
+  "layers": [
+    {
+      "id": "api",
+      "name": "API Layer",
+      "path": "src/CompetitionManager.Api/**",
+      "description": "Presentation layer. HTTP endpoints, DTOs, request/response mapping. Thin, stateless.",
+      "responsibilities": [
+        "Route HTTP requests to application services",
+        "Validate HTTP input (basic shape/type checking)",
+        "Map DTOs to domain objects (delegating to Application)",
+        "Return HTTP responses"
+      ],
+      "dependencies": ["application", "domain"],
+      "forbidden_dependencies": ["infrastructure_impl"],
+      "examples": [
+        "CompetitionManager.Api/Controllers/CompetitionsController.cs",
+        "CompetitionManager.Api/DTOs/CreateCompetitionRequest.cs"
+      ]
+    },
+    {
+      "id": "application",
+      "name": "Application Layer",
+      "path": "src/CompetitionManager.Application/**",
+      "description": "Use cases and orchestration. Application services coordinate domain logic and infrastructure.",
+      "responsibilities": [
+        "Implement use cases (e.g., CreateCompetition, UpdateResult)",
+        "Orchestrate domain entities and domain services",
+        "Handle transactions and cross-cutting concerns (logging, validation)",
+        "Translate between API DTOs and Domain objects",
+        "Call repositories and external services (via Domain interfaces)"
+      ],
+      "dependencies": ["domain"],
+      "forbidden_dependencies": ["api", "infrastructure_impl"],
+      "examples": [
+        "CompetitionManager.Application/Services/CompetitionService.cs",
+        "CompetitionManager.Application/Validators/CreateCompetitionValidator.cs"
+      ]
+    },
+    {
+      "id": "domain",
+      "name": "Domain Layer",
+      "path": "src/CompetitionManager.Domain/**",
+      "description": "Business logic and rules. Pure domain model, persistence-agnostic.",
+      "responsibilities": [
+        "Define entities and value objects (aggregates)",
+        "Enforce business rules and invariants",
+        "Define domain services for cross-aggregate logic",
+        "Define repository interfaces (no implementation)",
+        "Define domain events if applicable"
+      ],
+      "dependencies": [],
+      "forbidden_dependencies": ["api", "application", "infrastructure_impl"],
+      "examples": [
+        "CompetitionManager.Domain/Entities/Competition.cs",
+        "CompetitionManager.Domain/Repositories/ICompetitionRepository.cs",
+        "CompetitionManager.Domain/ValueObjects/CompetitionStatus.cs"
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "name": "Infrastructure Layer",
+      "path": "src/CompetitionManager.Infrastructure/**",
+      "description": "Technical implementations. Data access, external services, logging, DI setup.",
+      "responsibilities": [
+        "Implement repository interfaces (defined in Domain)",
+        "Connect to databases, message queues, external APIs",
+        "Provide logging, caching, and other cross-cutting concerns",
+        "Configure dependency injection (wired at API layer startup)"
+      ],
+      "dependencies": ["domain"],
+      "forbidden_dependencies": ["api", "application"],
+      "examples": [
+        "CompetitionManager.Infrastructure/Data/Repositories/CompetitionRepository.cs",
+        "CompetitionManager.Infrastructure/Persistence/CompetitionDbContext.cs",
+        "CompetitionManager.Infrastructure/ExternalServices/NotificationService.cs"
+      ]
+    }
+  ],
+  "boundary_rules": [
+    {
+      "rule": "Dependency flow is strictly downward (acyclic)",
+      "description": "API depends on Application; Application depends on Domain; Infrastructure depends on Domain. Never reverse.",
+      "violation_check": "detect_import_cycles"
+    },
+    {
+      "rule": "Domain is pure and ignorant of layers above",
+      "description": "Domain must have zero dependencies on API, Application, or Infrastructure implementation classes.",
+      "violation_check": "detect_forbidden_imports"
+    },
+    {
+      "rule": "Infrastructure depends on Domain interfaces, never APIs",
+      "description": "Infrastructure implements repository interfaces defined in Domain; it does NOT depend on Application services or API controllers.",
+      "violation_check": "detect_forbidden_imports"
+    },
+    {
+      "rule": "API layer is thin",
+      "description": "Controllers inject application services. No business logic in controllers. Minimal validation (shape checking only).",
+      "violation_check": "manual_review"
+    }
+  ],
+  "naming_conventions": {
+    "files": {
+      "style": "PascalCase",
+      "suffix_examples": {
+        "services": "Service",
+        "repositories": "Repository",
+        "validators": "Validator",
+        "entities": "no suffix",
+        "value_objects": "no suffix",
+        "specifications": "Specification"
+      }
+    },
+    "classes": {
+      "style": "PascalCase",
+      "interfaces": "PascalCase prefixed with I (e.g., ICompetitionService)"
+    },
+    "methods": {
+      "style": "PascalCase, verb-first for commands"
+    }
+  },
+  "testing": {
+    "framework": "MSTest",
+    "test_path": "tests/CompetitionManager.Tests/**",
+    "naming_convention": "<TargetClass>Tests.cs",
+    "test_method_naming": "<Method>_<Scenario>_<Expected>"
+  },
+  "constraints": [
+    {
+      "name": "No synchronous I/O in Domain",
+      "description": "Domain methods should not perform I/O. Defer I/O to Application layer via repository interfaces.",
+      "severity": "high"
+    },
+    {
+      "name": "Entities are mutable only within aggregate boundaries",
+      "description": "Only aggregate roots should be mutable. Navigation properties should be read-only collections.",
+      "severity": "medium"
+    },
+    {
+      "name": "No null-pointer exceptions in Domain",
+      "description": "Use value objects and invariants to prevent invalid states. Fail fast in constructors.",
+      "severity": "high"
+    }
+  ]
+}

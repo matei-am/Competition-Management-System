@@ -1,0 +1,6 @@
+@CompetitionManager.Api_HostAddress = http://localhost:5195
+
+GET {{CompetitionManager.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
