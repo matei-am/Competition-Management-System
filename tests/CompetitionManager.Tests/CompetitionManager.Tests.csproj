@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/CompetitionManager.Domain/CompetitionManager.Domain.csproj" />
+    <ProjectReference Include="../../src/CompetitionManager.Application/CompetitionManager.Application.csproj" />
     <ProjectReference Include="../../src/CompetitionManager.Infrastructure/CompetitionManager.Infrastructure.csproj" />
   </ItemGroup>
 

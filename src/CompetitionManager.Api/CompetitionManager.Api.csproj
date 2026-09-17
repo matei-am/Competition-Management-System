@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../CompetitionManager.Application/CompetitionManager.Application.csproj" />
+    <ProjectReference Include="../CompetitionManager.Domain/CompetitionManager.Domain.csproj" />
+    <ProjectReference Include="../CompetitionManager.Infrastructure/CompetitionManager.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

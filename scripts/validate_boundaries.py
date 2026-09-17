@@ -95,6 +95,14 @@ class ArchitectureValidator:
             if not import_layer:
                 continue
 
+            # The API composition root is the one allowed place to wire Infrastructure implementations.
+            if (
+                source_layer == "api"
+                and file_path.name == "Program.cs"
+                and import_layer == "infrastructure"
+            ):
+                continue
+
             # Check if import is allowed
             if import_layer == source_layer:
                 continue  # Same layer is always OK

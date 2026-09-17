@@ -1,8 +1,14 @@
+using CompetitionManager.Application.Services;
+using CompetitionManager.Domain.Repositories;
+using CompetitionManager.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton<ICompetitionRepository, CompetitionRepository>();
+builder.Services.AddSingleton<CompetitionService>();
 
 var app = builder.Build();
 
