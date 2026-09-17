@@ -5,7 +5,7 @@ using CompetitionManager.Domain.Repositories;
 
 namespace CompetitionManager.Application.Services;
 
-public sealed class CompetitionService
+public sealed class CompetitionService : ICompetitionService
 {
     private readonly ICompetitionRepository competitionRepository;
 

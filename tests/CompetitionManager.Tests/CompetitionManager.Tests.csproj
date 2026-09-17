@@ -22,6 +22,11 @@
     <ProjectReference Include="../../src/CompetitionManager.Domain/CompetitionManager.Domain.csproj" />
     <ProjectReference Include="../../src/CompetitionManager.Application/CompetitionManager.Application.csproj" />
     <ProjectReference Include="../../src/CompetitionManager.Infrastructure/CompetitionManager.Infrastructure.csproj" />
+    <ProjectReference Include="../../src/CompetitionManager.Api/CompetitionManager.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
