@@ -4,5 +4,6 @@ public enum CompetitionStatus
 {
     Upcoming,
     Active,
-    Finished
+    Finished,
+    Cancelled
 }

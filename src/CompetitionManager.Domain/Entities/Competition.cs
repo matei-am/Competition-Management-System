@@ -75,6 +75,11 @@ public sealed class Competition
 
     public void TransitionStatus(CompetitionStatus newStatus)
     {
+        if (Status == CompetitionStatus.Cancelled)
+        {
+            throw new InvalidOperationException("A cancelled competition cannot change status.");
+        }
+
         if (newStatus != Status + 1)
         {
             throw new InvalidOperationException(
@@ -83,6 +88,24 @@ public sealed class Competition
 
         Status = newStatus;
         Touch();
+    }
+
+    public void ActivateOrCancel(int tatamiCount)
+    {
+        if (Status != CompetitionStatus.Upcoming)
+        {
+            throw new InvalidOperationException(
+                "A competition can only be activated or cancelled while upcoming.");
+        }
+
+        if (tatamiCount < 1)
+        {
+            Status = CompetitionStatus.Cancelled;
+            Touch();
+            return;
+        }
+
+        TransitionStatus(CompetitionStatus.Active);
     }
 
     public void UpdateName(string name)

@@ -208,6 +208,53 @@ public class CompetitionTests
             ((IList<CategoryDefinition>)competition.WeightCategories)[0] = new CategoryDefinition("Heavy"));
     }
 
+    [Fact]
+    public void ActivateOrCancel_FromUpcomingWithTatamis_TransitionsToActive()
+    {
+        var competition = CreateCompetition();
+
+        competition.ActivateOrCancel(1);
+
+        Assert.Equal(CompetitionStatus.Active, competition.Status);
+    }
+
+    [Fact]
+    public void ActivateOrCancel_FromUpcomingWithZeroTatamis_TransitionsToCancelled()
+    {
+        var competition = CreateCompetition();
+
+        competition.ActivateOrCancel(0);
+
+        Assert.Equal(CompetitionStatus.Cancelled, competition.Status);
+    }
+
+    [Fact]
+    public void ActivateOrCancel_FromActive_ThrowsException()
+    {
+        var competition = CreateCompetition();
+        competition.ActivateOrCancel(1);
+
+        Assert.Throws<InvalidOperationException>(() => competition.ActivateOrCancel(1));
+    }
+
+    [Fact]
+    public void ActivateOrCancel_FromCancelled_ThrowsException()
+    {
+        var competition = CreateCompetition();
+        competition.ActivateOrCancel(0);
+
+        Assert.Throws<InvalidOperationException>(() => competition.ActivateOrCancel(1));
+    }
+
+    [Fact]
+    public void TransitionStatus_FromCancelled_ThrowsException()
+    {
+        var competition = CreateCompetition();
+        competition.ActivateOrCancel(0);
+
+        Assert.Throws<InvalidOperationException>(() => competition.TransitionStatus(CompetitionStatus.Active));
+    }
+
     private static Competition CreateCompetition()
     {
         return new Competition(
